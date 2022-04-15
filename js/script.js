@@ -1,142 +1,33 @@
+import tabs from './modules/tabs';
+import modal from './modules/modal';
+import timer from './modules/timer';
+import cards from './modules/cards';
+import calc from './modules/calc';
+import forms from './modules/forms';
+import slider from './modules/slider';
+import {openModal} from './modules/modal';
+
+
 window.addEventListener('DOMContentLoaded', () => {
-//Tabs
-    const tabs = document.querySelectorAll('.tabheader__item'),
-          tabscontent = document.querySelectorAll('.tabcontent'),
-          tabsParent = document.querySelector('.tabheader__items');
-
-    function hideTabContent () {
-        tabscontent.forEach(item => {
-            item.style.display = 'none';
-        });
-        tabs.forEach(item => {
-            item.classList.remove('tabheader__item_active');
-        });
-    }
-    function showTabContent (i = 0) {
-        tabscontent[i].style.display = 'block';
-        tabs[i].classList.add('tabheader__item_active');
-    }
-    hideTabContent();
-    showTabContent();
-
-    tabsParent.addEventListener('click', (event) => {
+       const modalTimerId = setTimeout(() => openModal('.modal', modalTimerId), 500000);
         
-        const target = event.target;
-
-        if (target && target.classList.contains('tabheader__item')) {
-            tabs.forEach((item, i) => {
-                if (target == item) {
-                    hideTabContent();
-                    showTabContent(i);
-                }
-            });
-        }
+    tabs('.tabheader__item', '.tabcontent', '.tabheader__items', 'tabheader__item_active');
+    modal('[data-modal]','.modal', modalTimerId);
+    timer('.timer', '2022-04-30');
+    cards();
+    calc();
+    forms('form', modalTimerId);
+    slider({
+        container:'.offer__slider',
+        slide:'.offer__slide',
+        nextArrow:'.offer__slider-next',
+        prevArrow:'.offer__slider-prev',
+        totalCounter:'#total',
+        currentCounter:'#current',
+        wrapper:'.offer__slider-wrapper',
+        field:'.offer__slider-inner'
     });
 
-
-//Timer
-
-const deadLine = '2022-04-30';
-
-    function getTimeRemaining(endtime) {
-        const t = Date.parse(endtime) - Date.parse(new Date()),
-            days = Math.floor (t / (1000*60*60*24)),
-            hours = Math.floor ((t/(1000*60*60) % 24)),
-            minutes = Math.floor ((t/1000/60) % 60),
-            seconds = Math.floor ((t / 1000) % 60); 
-
-        return {
-            'total': t,
-            'days': days,
-            'hours': hours,
-            'minutes': minutes,
-            'seconds': seconds
-        };
-      }
-
-    function getZero (num) {
-        if (num > 0 && num < 10) {
-            return `0${num}`;
-        }else{
-            return num;
-        }
-    }
-
-    function setClock(selector, endtime) {
-        const   timer = document.querySelector(selector),
-                days = timer.querySelector('#days'),
-                hours = timer.querySelector('#hours'),
-                minutes = timer.querySelector('#minutes'),
-                seconds = timer.querySelector('#seconds'),
-                timeInterval = setInterval (updateClock, 1000);
-
-        updateClock();
-
-        function updateClock() {
-            const t = getTimeRemaining(endtime);
-            
-            days.innerHTML = getZero (t.days);
-            hours.innerHTML = getZero (t.hours);
-            minutes.innerHTML = getZero (t.minutes);
-            seconds.innerHTML = getZero (t.seconds);
-
-            if (t.total <= 0) {
-                clearInterval(timeInterval);
-            }
-        }
-    }
-    setClock ('.timer', deadLine);
-   
-    //Modal
-
-    const modalTrigger = document.querySelectorAll('[data-modal]'),
-          modalCloseBtn = document.querySelector('[data-close]'),
-          modal = document.querySelector('.modal');
-         // modalTimerId = setTimeout(openModal, 6000);
-
-    
-    modalTrigger.forEach (btn => {
-        btn.addEventListener('click', openModal);
-    });
-
-    function openModal() {
-        modal.classList.add('show') ;
-        modal.classList.remove('hide');
-        document.body.style.overflow = 'hidden';
-        clearInterval(modalTimerId);
-    }
-
-    function closeModal() {
-        modal.classList.add('hide');
-        modal.classList.remove('show');
-        document.body.style.overflow = '';
-    }
-
-    
-    modalCloseBtn.addEventListener('click', closeModal);
-
-    modal.addEventListener('click', (e) => {
-        if (e.target == modal) {
-            closeModal();
-        }
-    });
-   
-    document.addEventListener('keydown', (e)=> {
-        if (e.code === 'Escape'&& modal.classList.contains('show')) {
-            closeModal();
-        }
-    });
-
-    function showModalByScroll () {
-        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
-            openModal();
-            window.removeEventListener('scroll', showModalByScroll);
-        }
-    }
-
-    window.addEventListener('scroll', showModalByScroll);
-
-
-    //Используем классы
-    
 });
+
+
